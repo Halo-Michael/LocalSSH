@@ -6,6 +6,9 @@ Author: halo_michael <yc992147156@me.com>
 Sponsor: halo_michael <yc992147156@me.com>
 Maintainer: halo_michael <yc992147156@me.com>
 Depends: firmware (>= 11.0), openssh, com.bingner.plutil, sed
+Replaces: com.midnightchips.localhostssh
+Conflicts: com.midnightchips.localhostssh
+Provides: com.midnightchips.localhostssh
 Architecture: iphoneos-arm
 Description: Enable port 2222 for OpenSSH.
  Support Checkra1n, Chimera, Electra and Unc0ver.
