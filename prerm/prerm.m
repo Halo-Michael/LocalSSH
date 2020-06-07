@@ -37,6 +37,7 @@ void run_system(const char *cmd) {
 int main() {
     if (getuid() != 0) {
         printf("Run this as root!\n");
+        return 1;
     }
 
     run_system("launchctl unload /Library/LaunchDaemons/com.openssh.sshd.plist");
