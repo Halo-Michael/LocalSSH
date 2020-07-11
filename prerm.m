@@ -1,4 +1,4 @@
-#include <CoreFoundation/CoreFoundation.h>
+#import <Foundation/Foundation.h>
 
 bool modifyPlist(NSString *filename, void (^function)(id)) {
     NSData *data = [NSData dataWithContentsOfFile:filename];
@@ -6,15 +6,14 @@ bool modifyPlist(NSString *filename, void (^function)(id)) {
         return false;
     }
     NSPropertyListFormat format = 0;
-    NSError *error = nil;
-    id plist = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListMutableContainersAndLeaves format:&format error:&error];
+    id plist = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListMutableContainersAndLeaves format:&format error:nil];
     if (plist == nil) {
         return false;
     }
     if (function) {
         function(plist);
     }
-    NSData *newData = [NSPropertyListSerialization dataWithPropertyList:plist format:format options:0 error:&error];
+    NSData *newData = [NSPropertyListSerialization dataWithPropertyList:plist format:format options:0 error:nil];
     if (newData == nil) {
         return false;
     }
@@ -42,16 +41,15 @@ int main() {
 
     run_system("launchctl unload /Library/LaunchDaemons/com.openssh.sshd.plist");
     if (access("/usr/libexec/sshd-keygen-wrapper", F_OK) == 0) {
-        NSMutableDictionary *LocalSSHListener = [NSMutableDictionary new];
-        LocalSSHListener[@"SockServiceName"] = @"2222";
         NSString *const plist = @"/Library/LaunchDaemons/com.openssh.sshd.plist";
         modifyPlist(plist, ^(id plist) {
-            plist[@"Sockets"][@"LocalSSHListener"] = LocalSSHListener;
+            plist[@"Sockets"][@"LocalSSHListener"] = nil;
         });
     } else {
-        run_system("sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config");
-        run_system("sed -i '/Port 22/a\\Port 2222' /etc/ssh/sshd_config");
+        run_system("sed -i '/Port 2222/d' /etc/ssh/sshd_config");
+        run_system("sed -i 's/Port 22/#Port 22/' /etc/ssh/sshd_config");
     }
     run_system("launchctl load /Library/LaunchDaemons/com.openssh.sshd.plist");
     return 0;
 }
+
