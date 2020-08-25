@@ -1,2 +1,2 @@
-Enable port 2222 for OpenSSH.
-Support Checkra1n, Chimera, Electra and Unc0ver.
+Enable port 2222 on localhost for OpenSSH.
+Support Checkra1n, Chimera , Odyssey and Unc0ver.
