@@ -40,17 +40,13 @@ int main() {
     }
 
     run_system("launchctl unload /Library/LaunchDaemons/com.openssh.sshd.plist");
-    if (access("/usr/libexec/sshd-keygen-wrapper", F_OK) == 0) {
-        NSMutableDictionary *LocalSSHListener = [NSMutableDictionary new];
-        LocalSSHListener[@"SockServiceName"] = @"2222";
-        NSString *const plist = @"/Library/LaunchDaemons/com.openssh.sshd.plist";
-        modifyPlist(plist, ^(id plist) {
-            plist[@"Sockets"][@"LocalSSHListener"] = LocalSSHListener;
-        });
-    } else {
-        run_system("sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config");
-        run_system("sed -i '/Port 22/a\\Port 2222' /etc/ssh/sshd_config");
-    }
+    NSMutableDictionary *LocalSSHListener = [NSMutableDictionary new];
+    LocalSSHListener[@"SockNodeName"] = @"localhost";
+    LocalSSHListener[@"SockServiceName"] = @"2222";
+    NSString *const plist = @"/Library/LaunchDaemons/com.openssh.sshd.plist";
+    modifyPlist(plist, ^(id plist) {
+        plist[@"Sockets"][@"LocalSSHListener"] = LocalSSHListener;
+    });
     run_system("launchctl load /Library/LaunchDaemons/com.openssh.sshd.plist");
     return 0;
 }

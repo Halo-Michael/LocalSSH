@@ -1,14 +1,14 @@
 Package: com.michael.localssh
-Version: 0.3.0
+Version: 0.4.0
 Section: Tweaks
 Name: LocalSSH
 Author: halo_michael <yc992147156@me.com>
 Sponsor: halo_michael <yc992147156@me.com>
 Maintainer: halo_michael <yc992147156@me.com>
-Depends: firmware (>= 11.0), openssh, sed
+Depends: firmware (>= 12.0), openssh(>= 8.0)
 Replaces: com.midnightchips.localhostssh
 Conflicts: com.midnightchips.localhostssh
 Provides: com.midnightchips.localhostssh
 Architecture: iphoneos-arm
-Description: Enable port 2222 for OpenSSH.
- Support Checkra1n, Chimera, Electra and Unc0ver.
+Description: Enable port 2222 on localhost for OpenSSH.
+ Support Checkra1n, Chimera , Odyssey and Unc0ver.

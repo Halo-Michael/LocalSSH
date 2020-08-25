@@ -40,16 +40,10 @@ int main() {
     }
 
     run_system("launchctl unload /Library/LaunchDaemons/com.openssh.sshd.plist");
-    if (access("/usr/libexec/sshd-keygen-wrapper", F_OK) == 0) {
-        NSString *const plist = @"/Library/LaunchDaemons/com.openssh.sshd.plist";
-        modifyPlist(plist, ^(id plist) {
-            plist[@"Sockets"][@"LocalSSHListener"] = nil;
-        });
-    } else {
-        run_system("sed -i '/Port 2222/d' /etc/ssh/sshd_config");
-        run_system("sed -i 's/Port 22/#Port 22/' /etc/ssh/sshd_config");
-    }
+    NSString *const plist = @"/Library/LaunchDaemons/com.openssh.sshd.plist";
+    modifyPlist(plist, ^(id plist) {
+        plist[@"Sockets"][@"LocalSSHListener"] = nil;
+    });
     run_system("launchctl load /Library/LaunchDaemons/com.openssh.sshd.plist");
     return 0;
 }
-
