@@ -1,30 +1,5 @@
 #import <Foundation/Foundation.h>
 
-bool modifyPlist(NSString *filename, void (^function)(id)) {
-    NSData *data = [NSData dataWithContentsOfFile:filename];
-    if (data == nil) {
-        return false;
-    }
-    NSPropertyListFormat format = 0;
-    id plist = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListMutableContainersAndLeaves format:&format error:nil];
-    if (plist == nil) {
-        return false;
-    }
-    if (function) {
-        function(plist);
-    }
-    NSData *newData = [NSPropertyListSerialization dataWithPropertyList:plist format:format options:0 error:nil];
-    if (newData == nil) {
-        return false;
-    }
-    if (![data isEqual:newData]) {
-        if (![newData writeToFile:filename atomically:YES]) {
-            return false;
-        }
-    }
-    return true;
-}
-
 void run_system(const char *cmd) {
     int status = system(cmd);
     if (WEXITSTATUS(status) != 0) {
@@ -40,13 +15,12 @@ int main() {
     }
 
     run_system("launchctl unload /Library/LaunchDaemons/com.openssh.sshd.plist");
-    NSMutableDictionary *LocalSSHListener = [NSMutableDictionary new];
-    LocalSSHListener[@"SockNodeName"] = @"localhost";
-    LocalSSHListener[@"SockServiceName"] = @"2222";
-    NSString *const plist = @"/Library/LaunchDaemons/com.openssh.sshd.plist";
-    modifyPlist(plist, ^(id plist) {
-        plist[@"Sockets"][@"LocalSSHListener"] = LocalSSHListener;
-    });
+    NSString *plistFile = @"/Library/LaunchDaemons/com.openssh.sshd.plist";
+    NSMutableDictionary *plist = [[NSMutableDictionary alloc] initWithContentsOfFile:plistFile];
+    plist[@"Sockets"][@"LocalSSHListener"] = [[NSMutableDictionary alloc] init];
+    plist[@"Sockets"][@"LocalSSHListener"][@"SockNodeName"] = @"localhost";
+    plist[@"Sockets"][@"LocalSSHListener"][@"SockServiceName"] = @"2222";
+    [[NSPropertyListSerialization dataWithPropertyList:plist format:NSPropertyListBinaryFormat_v1_0 options:0 error:nil] writeToFile:plistFile atomically:YES];
     run_system("launchctl load /Library/LaunchDaemons/com.openssh.sshd.plist");
     return 0;
 }

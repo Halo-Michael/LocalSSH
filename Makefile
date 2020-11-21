@@ -1,5 +1,5 @@
 TARGET = LocalSSH
-VERSION = 0.4.0
+VERSION = 0.4.1
 CC = xcrun -sdk ${THEOS}/sdks/iPhoneOS13.0.sdk clang -arch arm64 -arch arm64e -fobjc-arc -miphoneos-version-min=11.0
 LDID = ldid
 

@@ -6,7 +6,7 @@ int main() {
         return 1;
     }
 
-    NSDictionary *const Sockets = [NSDictionary dictionaryWithContentsOfFile:@"/Library/LaunchDaemons/com.openssh.sshd.plist"][@"Sockets"];
+    NSDictionary *Sockets = [[NSDictionary alloc] initWithContentsOfFile:@"/Library/LaunchDaemons/com.openssh.sshd.plist"][@"Sockets"];
     for (NSString *socket in [Sockets allKeys]) {
         if ([socket isEqual:@"LocalSSHListener"]) {
             printf("LocalSSHListener is already existed.\n");
